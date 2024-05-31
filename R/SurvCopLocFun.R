@@ -39,7 +39,8 @@ SurvCopLocFun <- function(u1, u2, status1, status2, family,
   # data input
   data <- list(model = "SurvLikelihood",
                u1 = u1[ix], u2 = u2[ix],
-               cen_start = c(0, sum(delta4), ), 
+               cen_start = c(0, sum(delta4), sum(delta4)+sum(delta3),
+                             sum(delta4)+sum(delta3)+sum(delta2)), 
                cen_length = c(sum(delta4), sum(delta3), sum(delta2), sum(delta1)),
                wgt = wgt[ix], xc = x[ix]-x0,
                family = family)
