@@ -7,6 +7,7 @@
 #include "dgaussian.hpp"
 #include "dgumbel.hpp"
 #include "dstudent.hpp"
+#include "gauss_binomial.hpp"
 #include "hclayton.hpp"
 #include "hfrank.hpp"
 #include "hgaussian.hpp"
@@ -32,6 +33,8 @@ Type objective_function<Type>::operator() () {
     return dgumbel(this);
   } else if(model == "dstudent") {
     return dstudent(this);
+  } else if(model == "gauss_binomial") {
+    return gauss_binomial(this);
   } else if(model == "hclayton") {
     return hclayton(this);
   } else if(model == "hfrank") {

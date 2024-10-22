@@ -10,7 +10,7 @@
 # through the 'TMB_FLAGS' argument below, e.g.,
 
 # TMB_FLAGS = -std=gnu++11
-TMB_FLAGS = -I"../../inst/include"
+TMB_FLAGS = -I"../../inst/include" -ffunction-sections -fdata-sections -Wa,-mbig-obj
 
 # --- TMB-specific compiling directives below ---
 
@@ -21,7 +21,7 @@ $(SHLIB): tmblib
 
 tmblib: 
 	(cd TMB; $(R_HOME)/bin$(R_ARCH_BIN)/Rscript \
-	--no-save --no-restore compile.R '$(TMB_FLAGS)')
+	--no-save --no-restore compile.R $(TMB_FLAGS))
 
 clean:
 	rm -rf *.so *.o TMB/*.so TMB/*.o
