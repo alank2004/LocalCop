@@ -25,8 +25,9 @@ namespace LocalCop {
     typedef Float Scalar; // Required by integrate
     Float x, n;           // Data
     Float mu, sd;         // Parameters
+    Float u;              // Integration Variable
     // Evaluate joint density of (u, x)
-    Float operator() (Float u) {
+    Float operator() () {
       Float ans = 0;
       ans += dnorm(u, Float(0.), Float(1.), true);
       Float p = invlogit(sd * u + mu);
@@ -42,9 +43,9 @@ namespace LocalCop {
     }
     // Integrate latent variable (u) out
     Float marginal() {
-      using gauss_kronrod::integrate;
+      using gauss_kronrod::mvIntegrate;
       Float ans =
-        integrate(*this, -INFINITY, INFINITY);
+        mvIntegrate(*this).wrt(u, -INFINITY, INFINITY) ();
       if(n > 1) {
         using atomic::gamma_utils::gammafn;
         ans /= gammafn(n+1) / (gammafn(x+1) * gammafn(n-x+1));
