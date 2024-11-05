@@ -16,61 +16,44 @@ namespace LocalCop {
 
   // TODO: This code is a TMB example, copied here to test how it works. Need to replace it with pgaussian.
   /*
-    This class evaluates the marginal density of x where
-    u     ~ Normal( mu, sd^2 )
-    x | u ~ Binom ( n , plogis(u) )
+    This class evaluates the integral of the exponential density with rate parameter lambda from lower to upper
   */
   template<class Float>
-  struct GaussBinomial_t {
+  struct Exponential {
     typedef Float Scalar; // Required by integrate
-    Float x, n;           // Data
-    Float mu, sd;         // Parameters
+    Float lambda;         // Parameters
     Float u;              // Integration Variable
-    // Evaluate joint density of (u, x)
+    // Evaluate exponential density with rate parameter lambda at u
     Float operator() () {
-      Float ans = 0;
-      ans += dnorm(u, Float(0.), Float(1.), true);
-      Float p = invlogit(sd * u + mu);
-      p = squeeze(p);
-      ans += x * log(p) + (n - x) * log(1. - p);
-      ans = exp(ans);
-      // Avoid NaNs in the gradient:
-      if (ans == 0) ans = 0;
-      // Avoid NaNs in the tail of the distribution:
-      using atomic::tiny_ad::isfinite;
-      if (!isfinite(ans)) ans = 0;
+      Float ans = lambda * exp(-lambda * u);
       return ans;
     }
     // Integrate latent variable (u) out
-    Float marginal() {
+    Float integrate(Float lower, Float upper) {
       using gauss_kronrod::mvIntegrate;
       Float ans =
-        mvIntegrate(*this).wrt(u, -INFINITY, INFINITY) ();
-      if(n > 1) {
-        using atomic::gamma_utils::gammafn;
-        ans /= gammafn(n+1) / (gammafn(x+1) * gammafn(n-x+1));
-      }
+        mvIntegrate(*this).wrt(u, lower, upper) ();
       return ans;
     }
   };
   // ****** How to use it in TMB:
   // 1. Create an evaluator 'eval' for previous class
   template<class Float>
-  Float eval(Float x, Float n, Float mu, Float sd) {
-    GaussBinomial_t<Float> f = {x, n, mu, sd};
-    return f.marginal();
+  Float eval(Float lambda, Float lower, Float upper) {
+    Exponential<Float> f = {lambda};
+    return f.integrate(lower, upper);
   }
   // 2. Run 'eval' through tiny_ad and obtain an atomic function
-  //    'func'.  The '0011' tells tiny_ad that we only need
-  //    derivatives wrt. mu and sd.
-  TMB_BIND_ATOMIC(func, 0011, eval(x[0], x[1], x[2], x[3]))
+  //    'func'.  The '111' tells tiny_ad that we need a derivative
+  //    with respect to every variable so that we can test the gradient.
+  TMB_BIND_ATOMIC(func, 111, eval(x[0], x[1], x[2]))
   // 3. Create a more user-friendly version ('func' takes vector
   //    arguments and there's a final invisible argument that
   //    corresponds to the derivative order)
   template<class Type>
-  Type GaussBinomial(Type x, Type n, Type mu, Type sd) {
-    vector<Type> args(5); // Last index reserved for derivative order
-    args << x, n, mu, sd, 0;
+  Type ExponentialIntegral(Type lambda, Type lower, Type upper) {
+    vector<Type> args(4); // Last index reserved for derivative order
+    args << lambda, lower, upper, 0;
     return LocalCop::func(CppAD::vector<Type>(args))[0];
   }
 
