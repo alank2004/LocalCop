@@ -21,27 +21,26 @@ namespace LocalCop {
   template<class Float>
   struct Exponential {
     typedef Float Scalar; // Required by integrate
-    Float lambda;         // Parameters
-    Float u;              // Integration Variable
-    // Evaluate exponential density with rate parameter lambda at u
-    Float operator() () {
-      Float ans = lambda * exp(-lambda * u);
+    Float x, y, theta;         // Parameters 
+    // Evaluate z * y * theta
+    Float operator() (Float z) {
+      Float ans = z * y * theta;
       return ans;
     }
-    // Integrate latent variable (u) out
-    Float integrate(Float lower, Float upper) {
-      using gauss_kronrod::mvIntegrate;
+    // Integrate latent variable z out
+    Float integrate() {
+      using gauss_kronrod::integrate;
       Float ans =
-        mvIntegrate(*this).wrt(u, lower, upper) ();
+        integrate(*this, 0, x);
       return ans;
     }
   };
   // ****** How to use it in TMB:
   // 1. Create an evaluator 'eval' for previous class
   template<class Float>
-  Float eval(Float lambda, Float lower, Float upper) {
-    Exponential<Float> f = {lambda};
-    return f.integrate(lower, upper);
+  Float eval(Float x, Float y, Float theta) {
+    Exponential<Float> f = {x, y, theta};
+    return f.integrate();
   }
   // 2. Run 'eval' through tiny_ad and obtain an atomic function
   //    'func'.  The '111' tells tiny_ad that we need a derivative
@@ -51,9 +50,9 @@ namespace LocalCop {
   //    arguments and there's a final invisible argument that
   //    corresponds to the derivative order)
   template<class Type>
-  Type ExponentialIntegral(Type lambda, Type lower, Type upper) {
+  Type IntegralFunctionTest(Type x, Type y, Type theta) {
     vector<Type> args(4); // Last index reserved for derivative order
-    args << lambda, lower, upper, 0;
+    args << x, y, theta, 0;
     return LocalCop::func(CppAD::vector<Type>(args))[0];
   }
 

@@ -7,12 +7,12 @@
 #include "dgaussian.hpp"
 #include "dgumbel.hpp"
 #include "dstudent.hpp"
-#include "exponential_integral.hpp"
 #include "hclayton.hpp"
 #include "hfrank.hpp"
 #include "hgaussian.hpp"
 #include "hgumbel.hpp"
 #include "hstudent.hpp"
+#include "integral_function_test.hpp"
 #include "LocalLikelihood.hpp"
 #include "pclayton.hpp"
 #include "pfrank.hpp"
@@ -33,8 +33,6 @@ Type objective_function<Type>::operator() () {
     return dgumbel(this);
   } else if(model == "dstudent") {
     return dstudent(this);
-  } else if(model == "exponential_integral") {
-    return exponential_integral(this);
   } else if(model == "hclayton") {
     return hclayton(this);
   } else if(model == "hfrank") {
@@ -45,6 +43,8 @@ Type objective_function<Type>::operator() () {
     return hgumbel(this);
   } else if(model == "hstudent") {
     return hstudent(this);
+  } else if(model == "integral_function_test") {
+    return integral_function_test(this);
   } else if(model == "LocalLikelihood") {
     return LocalLikelihood(this);
   } else if(model == "pclayton") {
