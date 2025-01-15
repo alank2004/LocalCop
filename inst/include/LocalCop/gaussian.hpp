@@ -21,10 +21,11 @@ namespace LocalCop {
   template<class Float>
   struct Exponential {
     typedef Float Scalar; // Required by integrate
-    Float x, y, theta;         // Parameters 
-    // Evaluate z * y * theta
+    Float x, theta;         // Parameters 
+    // Evaluate exponential density
     Float operator() (Float z) {
-      Float ans = z * y * theta;
+      Float ans = dexp(z, theta, 0);
+      // Float ans = theta * exp(- theta * z); 
       return ans;
     }
     // Integrate latent variable z out
@@ -35,26 +36,31 @@ namespace LocalCop {
       return ans;
     }
   };
-  // ****** How to use it in TMB:
-  // 1. Create an evaluator 'eval' for previous class
+
+
+  // An externally available integration evaluator
   template<class Float>
-  Float eval(Float x, Float y, Float theta) {
-    Exponential<Float> f = {x, y, theta};
+  Float exponential_evaluator(Float x, Float theta) {
+    Exponential<Float> f = {x, theta};
     return f.integrate();
   }
-  // 2. Run 'eval' through tiny_ad and obtain an atomic function
-  //    'func'.  The '111' tells tiny_ad that we need a derivative
-  //    with respect to every variable so that we can test the gradient.
-  TMB_BIND_ATOMIC(func, 111, eval(x[0], x[1], x[2]))
-  // 3. Create a more user-friendly version ('func' takes vector
-  //    arguments and there's a final invisible argument that
-  //    corresponds to the derivative order)
-  template<class Type>
-  Type IntegralFunctionTest(Type x, Type y, Type theta) {
-    vector<Type> args(4); // Last index reserved for derivative order
-    args << x, y, theta, 0;
-    return LocalCop::func(CppAD::vector<Type>(args))[0];
-  }
+
+  VECTORIZE2_tt(exponential_evaluator)
+
+  // The code below performs the same thing as VECTORIZE2_tt above, but for tiny_ad instead of CppAD
+  // // 2. Run the evaluator through tiny_ad and obtain an atomic function
+  // //    'exponential_integral'.  The '11' tells tiny_ad that we need a derivative
+  // //    with respect to every variable so that we can test the gradient.
+  // TMB_BIND_ATOMIC(exponential_integral, 11, exponential_evaluator(x[0], x[1]))
+  // // 3. Create a more user-friendly version ('exponential_integral' takes vector
+  // //    arguments and there's a final invisible argument that
+  // //    corresponds to the derivative order)
+  // template<class Type>
+  // Type IntegralFunctionTest(Type x, Type theta) {
+  //   vector<Type> args(3); // Last index reserved for derivative order
+  //   args << x, theta, 0;
+  //   return LocalCop::exponential_integral(CppAD::vector<Type>(args))[0];
+  // }
 
 
 
