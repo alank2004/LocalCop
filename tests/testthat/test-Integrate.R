@@ -5,8 +5,8 @@
 ## library(testthat)
 
 # Generate Values
-x <- runif(1, 0, 20)
-theta <- runif(1, 1, 3)
+x <- runif(100, 0, 20)
+theta <- runif(100, 1, 3)
 
 data <- list(model = "integral_function_test")
 parameters <- list(x = x, theta = theta)
@@ -16,7 +16,8 @@ integrated_tmb <- TMB::MakeADFun(data = data, parameters = parameters, silent = 
 
 # R versions of function and derivative
 integrated_r <- function(x, theta) {
-  return(1 - exp(- x * theta))
+  ans <- (1 - exp(- x * theta))
+  return(sum(ans))
 }
 
 integrated_grad_r <- function(x, theta) {
