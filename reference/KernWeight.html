@@ -100,14 +100,13 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span>, min <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, max<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">KernWeight</span><span class="op">(</span><span class="va">x</span>, <span class="va">x0</span>, band<span class="op">=</span><span class="fl">0.3</span>, kernel <span class="op">=</span> <span class="va">KernEpa</span>, band_type <span class="op">=</span> <span class="st">"constant"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.0000000 0.0000000 0.5231907 0.9669443 1.0612962 1.2444669 2.4575241</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 2.4989902 2.3342279 1.3003913 1.1008385 0.8895873 0.7857324 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 2.4107146 2.4458880 2.3919156 2.2534023 2.2134618 0.1632125 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000</span>
 <span class="r-in"><span><span class="fu">KernWeight</span><span class="op">(</span><span class="va">x</span>, <span class="va">x0</span>, band<span class="op">=</span><span class="fl">0.3</span>, kernel <span class="op">=</span> <span class="va">KernEpa</span>, band_type <span class="op">=</span> <span class="st">"variable"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.41957430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 3.19822658 3.29320975 2.91580212 0.54767584 0.09057621 0.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] 0.00000000 0.00000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 2.2932102 2.3231466 2.2772102 2.1593199 2.1253262 0.3803364 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000</span>
 </code></pre></div>
     </div>
   </div>

@@ -1,9 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   LocalCop: LocalCop.html
-last_built: 2025-03-21T22:52Z
+last_built: 2025-09-04T16:34Z
 urls:
   reference: https://mlysy.github.io/LocalCop/reference
   article: https://mlysy.github.io/LocalCop/articles
