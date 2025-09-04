@@ -14,25 +14,36 @@
 
 namespace LocalCop {
 
-  // TODO: This code is a TMB example, copied here to test how it works. Need to replace it with pgaussian.
   /*
-    This class evaluates the integral of the exponential density with rate parameter lambda from lower to upper
+    This class evaluates the integral of the bivariate normal distribution via the direct method.
+    Since we already have pnorm which is fast and accurate, we can avoid doing 2D integration by
+    conditioning on one of the two variables, in our case on X1 and its associated variable b1.
   */
   template<class Float>
-  struct Exponential {
+  struct BVNIntegrand {
     typedef Float Scalar; // Required by integrate
-    Float x, theta;         // Parameters 
-    // Evaluate exponential density
-    Float operator() (Float z) {
-      Float ans = dexp(z, theta, 0);
-      // Float ans = theta * exp(- theta * z); 
+    Float b1, b2, rho;         // Parameters 
+    // Evaluate conditional CDF
+    Float operator() (Float x) {
+      Float loc = rho * x;
+      Float scale = sqrt(1 - rho * rho);
+
+      // Replace Float(0.0) by adding mu to parameters above to control mean
+      // Replace the first Float(1.0) by adding sigma1 to parameters above to control the first s.d.
+      // Replace the second Float(1.0) by adding sigma2 to parameters above to control the second s.d.
+      Float ans = pnorm((b2 - loc) / scale, Float(0.0), Float(1.0)) *
+                  dnorm(x, Float(0.0), Float(1.0), false);
+
+
+      // Float ans = pnorm((b2 - loc) / scale, Float(0.0), Float(1.0), false, true) *
+      //             dnorm(x, Float(0.0), Float(1.0), false);
       return ans;
     }
-    // Integrate latent variable z out
+    // Integrate conditional CDF into the CDF
     Float integrate() {
       using gauss_kronrod::integrate;
       Float ans =
-        integrate(*this, 0, x);
+        integrate(*this, Float(-INFINITY), b1);
       return ans;
     }
   };
@@ -40,29 +51,12 @@ namespace LocalCop {
 
   // An externally available integration evaluator
   template<class Float>
-  Float exponential_evaluator(Float x, Float theta) {
-    Exponential<Float> f = {x, theta};
+  Float pbvn(Float b1, Float b2, Float rho) {
+    BVNIntegrand<Float> f = {b1, b2, rho};
     return f.integrate();
   }
 
-  VECTORIZE2_tt(exponential_evaluator)
-
-  // The code below performs the same thing as VECTORIZE2_tt above, but for tiny_ad instead of CppAD
-  // // 2. Run the evaluator through tiny_ad and obtain an atomic function
-  // //    'exponential_integral'.  The '11' tells tiny_ad that we need a derivative
-  // //    with respect to every variable so that we can test the gradient.
-  // TMB_BIND_ATOMIC(exponential_integral, 11, exponential_evaluator(x[0], x[1]))
-  // // 3. Create a more user-friendly version ('exponential_integral' takes vector
-  // //    arguments and there's a final invisible argument that
-  // //    corresponds to the derivative order)
-  // template<class Type>
-  // Type IntegralFunctionTest(Type x, Type theta) {
-  //   vector<Type> args(3); // Last index reserved for derivative order
-  //   args << x, theta, 0;
-  //   return LocalCop::exponential_integral(CppAD::vector<Type>(args))[0];
-  // }
-
-
+  VECTORIZE3_ttt(pbvn)
 
   /// Calculate Gaussian copula partial derivative with respect to u1.
   ///

@@ -12,8 +12,8 @@
 #include "hgaussian.hpp"
 #include "hgumbel.hpp"
 #include "hstudent.hpp"
-#include "integral_function_test.hpp"
 #include "LocalLikelihood.hpp"
+#include "pbvn.hpp"
 #include "pclayton.hpp"
 #include "pfrank.hpp"
 #include "pgumbel.hpp"
@@ -43,10 +43,10 @@ Type objective_function<Type>::operator() () {
     return hgumbel(this);
   } else if(model == "hstudent") {
     return hstudent(this);
-  } else if(model == "integral_function_test") {
-    return integral_function_test(this);
   } else if(model == "LocalLikelihood") {
     return LocalLikelihood(this);
+  } else if(model == "pbvn") {
+    return pbvn(this);
   } else if(model == "pclayton") {
     return pclayton(this);
   } else if(model == "pfrank") {
