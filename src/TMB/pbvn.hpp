@@ -1,4 +1,4 @@
-#include "LocalCop/gaussian.hpp"
+#include "LocalCop/pbvn.hpp"
 
 #undef TMB_OBJECTIVE_PTR
 #define TMB_OBJECTIVE_PTR obj

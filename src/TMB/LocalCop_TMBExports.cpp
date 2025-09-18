@@ -16,6 +16,7 @@
 #include "pbvn.hpp"
 #include "pclayton.hpp"
 #include "pfrank.hpp"
+#include "pgaussian.hpp"
 #include "pgumbel.hpp"
 #include "pt.hpp"
 #include "qt.hpp"
@@ -51,6 +52,8 @@ Type objective_function<Type>::operator() () {
     return pclayton(this);
   } else if(model == "pfrank") {
     return pfrank(this);
+  } else if(model == "pgaussian") {
+    return pgaussian(this);
   } else if(model == "pgumbel") {
     return pgumbel(this);
   } else if(model == "pt") {
